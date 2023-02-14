@@ -21,4 +21,6 @@ Route::get('/', function () {
 //Route::get('/admin/dashboard' , function (){
 //    return view('dashboard');
 //});
+Route::get('/api/users', [\App\Http\Controllers\Admin\UserController::class, 'index']);
 Route::get('{view}', ApplicationController::class)->where('view','(.*)');
+

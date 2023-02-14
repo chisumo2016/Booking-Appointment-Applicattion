@@ -16,3 +16,10 @@
          <router-link to=""></router-lnk>
     - Add the active class dynamically  
             active-class="active"
+    - Create all vue page from above ,with corresponded folder
+                    Dashboard
+                    Appointments
+                    Users
+                    Settings
+                    Profile
+    - Copy the dashboard and paste .
