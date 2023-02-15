@@ -10,6 +10,10 @@ window._ = _;
 import axios from 'axios';
 window.axios = axios;
 
+/**Import the Jquery Plugin**/
+import jquery from  'jquery';
+window.$ = window.jQuery = jquery;
+
 window.axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
 
 /**

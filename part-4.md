@@ -14,4 +14,6 @@
             php artisan tinker
             User::factory()->create();
     - When the component is mounted , we should call getUsers()
+    - Completed to write the logic to dissplay all users in admin area.
+
 
