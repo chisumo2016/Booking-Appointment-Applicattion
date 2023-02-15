@@ -31,7 +31,7 @@
                             <th>#</th>
                             <th>Name</th>
                             <th>Email</th>
-                            <th>Registered</th>
+                            <th>Registered Date </th>
                             <th>Role</th>
                             <th>Options</th>
                         </tr>
@@ -41,7 +41,7 @@
                             <td>{{ index + 1 }}</td>
                             <td>{{ user.name }}</td>
                             <td>{{ user.email}}</td>
-                            <td>-</td>
+                            <td>{{ formatDate(user.created_at)}}</td>
                             <td>-</td>
                             <td>
                                 <a @click.prevent="editUser(user)" href="#"><i class="fa fa-edit"></i></a>
@@ -151,9 +151,11 @@
 import axios from "axios";
 import {onMounted, reactive, ref} from "vue";
 import { Form, Field } from 'vee-validate';
-//import { object } from 'yup';
 import * as yup from "yup";
 import { useToastr } from '../../toastr.js'
+import { formatDate} from "../../helper.js";
+// import moment from 'moment';
+
 
 
 const users         = ref([]);

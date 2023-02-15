@@ -33,6 +33,10 @@ class User extends Authenticatable
         'remember_token',
     ];
 
+    protected  $appends = [
+        'formatted_created_at',
+    ];
+
     /**
      * The attributes that should be cast.
      *
@@ -41,4 +45,9 @@ class User extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
+
+    public  function  getFormattedCreatedAtAttribute()
+    {
+        return $this->created_at->format(config('app.date_format'));
+    }
 }
