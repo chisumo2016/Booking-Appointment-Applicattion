@@ -175,7 +175,7 @@ const editUserSchema  = yup.object({
 
 });
 
-const createUser = (values, { resetForm }) => {
+const createUser = (values, { resetForm , setErrors}) => {
     console.log(values);
   axios.post('/api/users', values)
     .then((response) => {
@@ -184,10 +184,14 @@ const createUser = (values, { resetForm }) => {
 
         /**Hide The modal*/
         $('#userFormModal').modal('hide');
-
-        /**Reset The Form*/
         resetForm();
-    });
+    }).catch((error) =>{
+        if (error.response.data.errors){
+            setErrors( error.response.data.errors);
+        }
+
+        //setFieldError('email', error.response.data.errors.email[0]);
+  })
 };
 
 /**Stop The Edit Modal**/
@@ -213,25 +217,27 @@ const editUser = (user) => {
     }
 };
 
-const  updateUser = (values) =>{
+const  updateUser = (values, {setErrors}) =>{
     console.log(values);
     axios.put('/api/users/' + formValues.value.id , values)
     .then((response) =>{
         const index = users.value.findIndex(user => user.id === response.data.id);
         users.value[index] = response.data;
+
         $('#userFormModal').modal('hide');
+
     }).catch((error) =>{
+        setErrors(error.response.data.errors)
         console.log(error);
-    }).finally(() =>{
-        form.value.resetForm();
     })
 }
 
-const handleSubmit = (values) =>{
+const handleSubmit = (values, actions) =>{
+    console.log(actions);
     if (editing.value){
-        updateUser(values);
+        updateUser(values, actions);
     }else {
-        createUser(values);
+        createUser(values, actions);
     }
 }
 // const createUser =(() => {
