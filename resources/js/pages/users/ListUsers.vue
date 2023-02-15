@@ -194,7 +194,6 @@ const createUser = (values, { resetForm , setErrors}) => {
         if (error.response.data.errors){
             setErrors( error.response.data.errors);
         }
-
         //setFieldError('email', error.response.data.errors.email[0]);
   })
 };

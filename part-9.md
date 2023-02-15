@@ -4,3 +4,5 @@
     - Create a file called toastr.js
         * Create the function and export
         *open ListUser.vuue and import and declare
+        * Add the toastr into createUser(){} and UpdateUser(){}
+    - Logic inside the toastr.js
