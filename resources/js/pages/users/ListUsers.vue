@@ -135,12 +135,15 @@ import {onMounted, reactive, ref} from "vue";
 import { Form, Field } from 'vee-validate';
 //import { object } from 'yup';
 import * as yup from "yup";
+import { useToastr } from '../../toastr.js'
 
 
 const users         = ref([]);
 const editing       = ref(false);
 const formValues    = ref();
 const form          = ref(null)
+const toastr = useToastr();
+
 // const form  = reactive({
 //     name: '',
 //     email:'',
@@ -149,6 +152,7 @@ const form          = ref(null)
 
 onMounted(() =>{
     getUsers();
+    //toastr.info('Success')
 });
 
 const getUsers = () => {
@@ -182,9 +186,10 @@ const createUser = (values, { resetForm , setErrors}) => {
         /**Push Data into Users array*/
         users.value.unshift(response.data);
 
-        /**Hide The modal*/
         $('#userFormModal').modal('hide');
+
         resetForm();
+        toastr.success('User created successfully')
     }).catch((error) =>{
         if (error.response.data.errors){
             setErrors( error.response.data.errors);
@@ -225,6 +230,8 @@ const  updateUser = (values, {setErrors}) =>{
         users.value[index] = response.data;
 
         $('#userFormModal').modal('hide');
+
+        toastr.success('User updated successfully')
 
     }).catch((error) =>{
         setErrors(error.response.data.errors)

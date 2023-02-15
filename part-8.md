@@ -15,4 +15,5 @@
            2:  const createUser = (values, { resetForm , setErrors}) 
                     setErrors(error.response.data.errors);  
             3:put the if(){}
-    - Add the same validation on edit
+    - Add the same validation on edit 
+            Add the validattion inn laravel on update method.
