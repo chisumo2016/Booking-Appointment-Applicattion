@@ -18,7 +18,9 @@
     <div class="content">
         <div class="container-fluid">
             <!-- Button trigger modal -->
-            <button type="button" class="btn btn-primary mb-2" data-toggle="modal" data-target="#createUserModal">
+            <button
+                @click="addUser"
+                type="button" class="btn btn-primary mb-2" >
                 Add New User
             </button>
             <div class="card">
@@ -41,7 +43,14 @@
                             <td>{{ user.email}}</td>
                             <td>-</td>
                             <td>-</td>
-                            <td>-</td>
+                            <td>
+                                <a
+                                    @click.prevent="editUser(user)"
+                                    href="#">
+                                    <i class="fa fa-edit">
+                                    </i>
+                                </a>
+                            </td>
                         </tr>
 
                         </tbody>
@@ -51,17 +60,26 @@
         </div>
     </div>
     <!-- Modal -->
-    <div class="modal fade" id="createUserModal" data-backdrop="static" tabindex="-1" role="dialog"
+    <div class="modal fade" id="userFormModal" data-backdrop="static" tabindex="-1" role="dialog"
          aria-labelledby="staticBackdropLabel" aria-hidden="true">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="staticBackdropLabel">Add New User</h5>
+                    <h5 class="modal-title" id="staticBackdropLabel">
+                        <span v-if="editing"> Edit  User</span>
+                        <span v-else> Add New User</span>
+                    </h5>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
-                <Form @submit="createUser" :validation-schema="schema" v-slot="{ errors}">
+<!--                editing ? updateUser : createUser-->
+                <Form
+                    ref="form"
+                    @submit="handleSubmit"
+                    :validation-schema="editing ? editUserSchema : createUserSchema"
+                    v-slot="{ errors}"
+                    :initial-values="formValues">
                     <div class="modal-body">
                         <div class="form-group">
                             <label for="name">Name</label>
@@ -119,7 +137,10 @@ import { Form, Field } from 'vee-validate';
 import * as yup from "yup";
 
 
-const users = ref([]);
+const users         = ref([]);
+const editing       = ref(false);
+const formValues    = ref();
+const form          = ref(null)
 // const form  = reactive({
 //     name: '',
 //     email:'',
@@ -138,10 +159,19 @@ const getUsers = () => {
 }
 
 /**Validate the Inputs*/
-const schema = yup.object({
+const createUserSchema = yup.object({
     name: yup. string().required(),
     email: yup. string().email().required(),
     password: yup. string().required().min(8),
+
+});
+
+const editUserSchema  = yup.object({
+    name: yup.string().required(),
+    email: yup.string().email().required(),
+    password: yup.string().when((password, schema) => {
+        return password ? schema.required().min(8) : schema;
+    }),
 
 });
 
@@ -153,12 +183,57 @@ const createUser = (values, { resetForm }) => {
         users.value.unshift(response.data);
 
         /**Hide The modal*/
-        $('#createUserModal').modal('hide');
+        $('#userFormModal').modal('hide');
 
         /**Reset The Form*/
         resetForm();
     });
 };
+
+/**Stop The Edit Modal**/
+const addUser = () =>{
+    editing.value = false;
+    /**Show The modal*/
+    $('#userFormModal').modal('show');
+}
+
+/**Display the Modal */
+const editUser = (user) => {
+    console.log(user)
+    editing.value = true;
+    form.value.resetForm();
+
+    /**Show The modal*/
+    $('#userFormModal').modal('show');
+    //formValues.value = user
+    formValues.value = {
+        id:         user.id,
+        name:       user.name,
+        email:      user.email,
+    }
+};
+
+const  updateUser = (values) =>{
+    console.log(values);
+    axios.put('/api/users/' + formValues.value.id , values)
+    .then((response) =>{
+        const index = users.value.findIndex(user => user.id === response.data.id);
+        users.value[index] = response.data;
+        $('#userFormModal').modal('hide');
+    }).catch((error) =>{
+        console.log(error);
+    }).finally(() =>{
+        form.value.resetForm();
+    })
+}
+
+const handleSubmit = (values) =>{
+    if (editing.value){
+        updateUser(values);
+    }else {
+        createUser(values);
+    }
+}
 // const createUser =(() => {
 //     axios.post('/api/users', form)
 //     .then((response) => {

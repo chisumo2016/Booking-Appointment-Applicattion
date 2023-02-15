@@ -34,6 +34,7 @@
              <Form @submit="createUser" :validation-schema="schema" v-slot="{ errors}">
                 :class="{'is-invalid' : errors.name}"
                 <span class="invalid-feedback">{{ errors.name}}</span>
-    - We will not using the form, comment
+    - We will not using the form, comment code.
+    - Clear the inpuut field.
 
 
