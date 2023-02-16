@@ -46,9 +46,9 @@
                             <th>Options</th>
                         </tr>
                         </thead>
-                        <tbody v-if="users.length > 0">
+                        <tbody v-if="users.data.length > 0">
                         <UserListItem
-                            v-for="(user, index) in users"
+                            v-for="(user, index) in users.data"
                             :key="user.id"
                             :user=user
                             :index=index
@@ -64,6 +64,10 @@
                     </table>
                 </div>
             </div>
+            <Bootstrap4Pagination
+                :data="users"
+                @pagination-change-page="getUsers"
+            />
         </div>
     </div>
     <!-- Modal -->
@@ -144,11 +148,12 @@ import * as yup from "yup";
 import { useToastr } from '../../toastr.js'
 import UserListItem from "./UserListItem.vue";
 import {debounce} from "lodash";
+import { Bootstrap4Pagination } from 'laravel-vue-pagination';
 // import moment from 'moment';
 //import { formatDate} from "../../helper.js";
 
 
-const users         = ref([]);
+const users         = ref({'data':[]});
 const editing       = ref(false);
 const formValues    = ref();
 const form          = ref(null);
@@ -167,8 +172,8 @@ onMounted(() =>{
     //toastr.info('Success')
 });
 
-const getUsers = () => {
-    axios.get('/api/users')
+const getUsers = (page = 1) => {
+    axios.get(`/api/users?page=${page}`)
         .then((response) => {
             users.value = response.data;
         })
