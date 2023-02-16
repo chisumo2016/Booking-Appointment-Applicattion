@@ -6,7 +6,8 @@
             <td>{{ formatDate(user.created_at)}}</td>
             <td>{{ user.role}}</td>
             <td>
-                <a @click.prevent="editUser(user)" href="#"><i class="fa fa-edit"></i></a>
+<!--                <a @click.prevent="editUser(user)" href="#"><i class="fa fa-edit"></i></a>-->
+                <a @click.prevent="$emit('editUser', user)" href="#"><i class="fa fa-edit"></i></a>
                 <a @click.prevent="confirmUserDeletion(user)" href="#"><i class="fa fa-trash text-danger ml-2"></i></a>
             </td>
         </tr>
@@ -51,9 +52,9 @@ const emit = defineEmits(['userDeleted' ,'editUser']);
 const userIdBeingDeleted  = ref(null)
 const toastr        = useToastr();
 
-const editUser = (user) => {
-    emit('editUser', user)
-}
+// const editUser = (user) => {
+//     emit('editUser', user)
+// }
 
 /**Show Modal*/
 const  confirmUserDeletion = (user) => {

@@ -56,6 +56,7 @@
                             @edit-user="editUser"
                             @user-deleted="userDeleted"
                  />
+    - TESTED PASSED.
             
         
         
