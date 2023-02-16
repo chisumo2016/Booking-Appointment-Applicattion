@@ -28,7 +28,7 @@
                     </button>
                     <div v-if="selectedUsers.length > 0">
                         <button
-                            
+
                             @click="bulkDelete"
                             type="button"
                             class="btn btn-danger mb-2 ml-2">
