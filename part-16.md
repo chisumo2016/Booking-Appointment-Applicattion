@@ -15,6 +15,13 @@
         * Define the changeRole method loogic into UserController
         * Add mass assign into User Model
         * Fix on ui part to show selected
+                <td>
+                <select
+                    @change="changeRole(user , $event.target.value)"
+                    class="form-control">
+                    <option v-for="role in roles" :value="role.value" :selected="user.role === role.name">{{ role.name }}</option>
+                </select>
+            </td>
 
                 
         

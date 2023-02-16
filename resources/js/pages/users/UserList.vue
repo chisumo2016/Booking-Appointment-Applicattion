@@ -18,11 +18,21 @@
     <div class="content">
         <div class="container-fluid">
             <!-- Button trigger modal -->
-            <button
-                @click="addUser"
-                type="button" class="btn btn-primary mb-2" >
-                Add New User
-            </button>
+            <div class="d-flex justify-content-between">
+                <button
+                    @click="addUser"
+                    type="button" class="btn btn-primary mb-2" >
+                    Add New User
+                </button>
+                <div>
+                    <input
+                        v-model="searchQuery"
+                        type="text"
+                        class="form-control"
+                        placeholder="Search .....">
+<!--                    <button @click.prevent="search">Submit</button>-->
+                </div>
+            </div>
             <div class="card">
                 <div class="card-body table-responsive p-0">
                     <table class="table table-bordered table-hover">
@@ -36,7 +46,7 @@
                             <th>Options</th>
                         </tr>
                         </thead>
-                        <tbody>
+                        <tbody v-if="users.length > 0">
                         <UserListItem
                             v-for="(user, index) in users"
                             :key="user.id"
@@ -45,6 +55,11 @@
                             @edit-user="editUser"
                             @user-deleted="userDeleted"
                         />
+                        </tbody>
+                        <tbody v-else>
+                            <tr>
+                                <td colspan="6" class="text-center">No Result Found .......</td>
+                            </tr>
                         </tbody>
                     </table>
                 </div>
@@ -123,11 +138,12 @@
 
 <script setup>
 import axios from "axios";
-import {onMounted, reactive, ref} from "vue";
+import {onMounted, reactive, ref, watch} from "vue";
 import { Form, Field } from 'vee-validate';
 import * as yup from "yup";
 import { useToastr } from '../../toastr.js'
 import UserListItem from "./UserListItem.vue";
+import {debounce} from "lodash";
 // import moment from 'moment';
 //import { formatDate} from "../../helper.js";
 
@@ -135,8 +151,9 @@ import UserListItem from "./UserListItem.vue";
 const users         = ref([]);
 const editing       = ref(false);
 const formValues    = ref();
-const form          = ref(null)
+const form          = ref(null);
 const toastr        = useToastr();
+const searchQuery   = ref(null);
 
 
 // const form  = reactive({
@@ -246,6 +263,22 @@ const userDeleted = (userId)=>{
     users.value = users.value.filter(user => user.id !== userId);
 }
 
+const search = () => {
+    axios.get('/api/users/search',{
+        params : {
+            query : searchQuery.value
+        }
+    })
+    .then(response => {
+        users.value = response.data;
+
+    }).catch(error =>{
+        console.log(error)
+    })
+}
+watch(searchQuery, debounce(()=>{
+    search();
+},300));
 
 // const createUser =(() => {
 //     axios.post('/api/users', form)
