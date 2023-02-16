@@ -4,7 +4,13 @@
             <td>{{ user.name }}</td>
             <td>{{ user.email}}</td>
             <td>{{ formatDate(user.created_at)}}</td>
-            <td>{{ user.role}}</td>
+            <td>
+                <select
+                    @change="changeRole(user , $event.target.value)"
+                    class="form-control">
+                    <option v-for="role in roles" :value="role.value" :selected="user.role === role.name">{{ role.name }}</option>
+                </select>
+            </td>
             <td>
 <!--                <a @click.prevent="editUser(user)" href="#"><i class="fa fa-edit"></i></a>-->
                 <a @click.prevent="$emit('editUser', user)" href="#"><i class="fa fa-edit"></i></a>
@@ -51,6 +57,16 @@ const emit = defineEmits(['userDeleted' ,'editUser']);
 
 const userIdBeingDeleted  = ref(null)
 const toastr        = useToastr();
+const roles = ref([
+    {
+        name:'ADMIN',
+        value:1
+    },
+    {
+        name:'USER',
+        value: 2
+    }
+])
 
 // const editUser = (user) => {
 //     emit('editUser', user)
@@ -73,6 +89,15 @@ const deleteUser = () =>{
             //users.value = users.value.filter(user => user.id !== userIdBeingDeleted.value);
             toastr.success('User deleted successfully')
         })
+}
+
+const changeRole = (user , role ) =>{
+    axios.patch(`/api/users/${user.id}/change-role`,{
+        role: role ,
+    })
+    .then(() =>{
+        toastr.success('Role changed successfully');
+    })
 }
 </script>
 

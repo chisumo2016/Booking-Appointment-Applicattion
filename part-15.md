@@ -13,6 +13,10 @@
                 <a @click.prevent="editUser(user)" href="#"><i class="fa fa-edit"></i></a>
             TO
             <a @click.prevent=$emit('editUser', user)" href="#"><i class="fa fa-edit"></i></a>
+        * comment the and pass the event to template
+                    const editUser = (user) => {
+                    emit('editUser', user)
+            }
 
                 
         
