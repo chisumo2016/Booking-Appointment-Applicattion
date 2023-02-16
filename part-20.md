@@ -13,4 +13,6 @@
                     selectAll : Boolean
                 });
                 :checked="selectAll"
+
+    - PROBLEM ON SELECT ALL.
       

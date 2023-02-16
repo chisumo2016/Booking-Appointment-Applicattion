@@ -19,20 +19,24 @@
         <div class="container-fluid">
             <!-- Button trigger modal -->
             <div class="d-flex justify-content-between">
-                <div>
+                <div class="d-flex">
                     <button
                         @click="addUser"
-                        type="button" class="btn btn-primary mb-2 " >
+                        type="button" class="btn btn-primary mb-2">
+                        <i class="fa fa-plus-circle mr-1"></i>
                         Add New User
                     </button>
-                    <button
-                        v-if="selectedUsers.length > 0"
-                        @click="bulkDelete"
-                        type="button" class="btn btn-danger mb-2 ml-2" >
-                        Delete Selected
-                    </button>
-
-
+                    <div v-if="selectedUsers.length > 0">
+                        <button
+                            
+                            @click="bulkDelete"
+                            type="button"
+                            class="btn btn-danger mb-2 ml-2">
+                            <i class="fa fa-trash mr-1"></i>
+                            Delete Selected
+                        </button>
+                        <span class="ml-2">Selected {{  selectedUsers.length }} users</span>
+                    </div>
                 </div>
                 <div>
                     <input
@@ -191,6 +195,8 @@ const getUsers = (page = 1) => {
     axios.get(`/api/users?page=${page}`)
         .then((response) => {
             users.value = response.data;
+            selectedUsers.value = [];
+            selectAll.value = false;
         })
 }
 
@@ -216,7 +222,7 @@ const createUser = (values, { resetForm , setErrors}) => {
   axios.post('/api/users', values)
     .then((response) => {
         /**Push Data into Users array*/
-        users.value.unshift(response.data);
+        users.value.data.unshift(response.data);
 
         $('#userFormModal').modal('hide');
 
