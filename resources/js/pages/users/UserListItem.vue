@@ -1,5 +1,6 @@
 <template>
         <tr >
+            <th><input type="checkbox" @change="toggleSelection"></th>
             <td>{{ index + 1 }}</td>
             <td>{{ user.name }}</td>
             <td>{{ user.email}}</td>
@@ -49,7 +50,7 @@ import {ref} from "vue";
 import { useToastr } from '../../toastr.js'
 
 
-defineProps({
+const props = defineProps({
     user: Object,
     index : Number
 });
@@ -98,6 +99,10 @@ const changeRole = (user , role ) =>{
     .then(() =>{
         toastr.success('Role changed successfully');
     })
+}
+
+const toggleSelection = () =>{
+    emit('toggleSelection', props.user);
 }
 </script>
 

@@ -19,11 +19,21 @@
         <div class="container-fluid">
             <!-- Button trigger modal -->
             <div class="d-flex justify-content-between">
-                <button
-                    @click="addUser"
-                    type="button" class="btn btn-primary mb-2" >
-                    Add New User
-                </button>
+                <div>
+                    <button
+                        @click="addUser"
+                        type="button" class="btn btn-primary mb-2 " >
+                        Add New User
+                    </button>
+                    <button
+                        v-if="selectedUsers.length > 0"
+                        @click="bulkDelete"
+                        type="button" class="btn btn-danger mb-2 ml-2" >
+                        Delete Selected
+                    </button>
+
+
+                </div>
                 <div>
                     <input
                         v-model="searchQuery"
@@ -38,7 +48,8 @@
                     <table class="table table-bordered table-hover">
                         <thead>
                         <tr>
-                            <th>#</th>
+                            <th><input type="checkbox"></th>
+                            <th style="width: 10px;">#</th>
                             <th>Name</th>
                             <th>Email</th>
                             <th>Registered Date </th>
@@ -54,6 +65,7 @@
                             :index=index
                             @edit-user="editUser"
                             @user-deleted="userDeleted"
+                            @toggle-selection="toggleSelection"
                         />
                         </tbody>
                         <tbody v-else>
@@ -159,6 +171,7 @@ const formValues    = ref();
 const form          = ref(null);
 const toastr        = useToastr();
 const searchQuery   = ref(null);
+const selectedUsers = ref([]);
 
 
 // const form  = reactive({
@@ -285,6 +298,31 @@ watch(searchQuery, debounce(()=>{
     search();
 },300));
 
+const toggleSelection = (user) =>{
+    const index = selectedUsers.value.indexOf(user.id);
+    if (index === -1) {
+        selectedUsers.value.push(user.id);
+    }else {
+        selectedUsers.value.splice(index, 1)
+    }
+    //selectedUsers.value.push(user.id);
+    console.log(selectedUsers.value);
+}
+
+const bulkDelete = () => {
+    axios.delete('/api/users',{
+        data:{
+            ids: selectedUsers.value
+        }
+    })
+    .then(response => {
+        users.value.data  = users.value.data.filter(user => !selectedUsers.value.includes(user.id));
+        selectedUsers.value = [];
+
+        toastr.success(response.data.message); //'Users deleted successfully'
+        alert('Deleted')
+    })
+}
 // const createUser =(() => {
 //     axios.post('/api/users', form)
 //     .then((response) => {
