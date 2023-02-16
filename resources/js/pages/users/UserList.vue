@@ -48,7 +48,7 @@
                     <table class="table table-bordered table-hover">
                         <thead>
                         <tr>
-                            <th><input type="checkbox"></th>
+                            <th><input type="checkbox" v-model="selectAll" @change="selectAllUsers"></th>
                             <th style="width: 10px;">#</th>
                             <th>Name</th>
                             <th>Email</th>
@@ -66,6 +66,7 @@
                             @edit-user="editUser"
                             @user-deleted="userDeleted"
                             @toggle-selection="toggleSelection"
+                            @select-all="selectAll"
                         />
                         </tbody>
                         <tbody v-else>
@@ -172,6 +173,7 @@ const form          = ref(null);
 const toastr        = useToastr();
 const searchQuery   = ref(null);
 const selectedUsers = ref([]);
+const selectAll     = ref(false);
 
 
 // const form  = reactive({
@@ -318,10 +320,20 @@ const bulkDelete = () => {
     .then(response => {
         users.value.data  = users.value.data.filter(user => !selectedUsers.value.includes(user.id));
         selectedUsers.value = [];
+        selectedUsers.value = false;
 
         toastr.success(response.data.message); //'Users deleted successfully'
-        alert('Deleted')
+        //alert('Deleted')
     })
+}
+
+const selectAllUsers = () => {
+    if (selectAll.value){
+        selectedUsers.value = users.value.data.map(user => user.id);
+    }else{
+        selectedUsers.value = [];
+    }
+    console.log(selectedUsers.value )
 }
 // const createUser =(() => {
 //     axios.post('/api/users', form)

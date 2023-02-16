@@ -52,3 +52,4 @@
                     users.value.data  = users.value.data.filter(user => !selectedUsers.value.includes(user.id));
     - TESTED - OK
     - But the button still shhowing once the record has been deleted, we need to clear the selectedUsers.value = []
+    - TEST - PASSED.

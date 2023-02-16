@@ -1,6 +1,6 @@
 <template>
         <tr >
-            <th><input type="checkbox" @change="toggleSelection"></th>
+            <td><input type="checkbox" :checked="selectAll" @change="toggleSelection"/></td>
             <td>{{ index + 1 }}</td>
             <td>{{ user.name }}</td>
             <td>{{ user.email}}</td>
@@ -52,7 +52,8 @@ import { useToastr } from '../../toastr.js'
 
 const props = defineProps({
     user: Object,
-    index : Number
+    index : Number,
+    selectAll : Boolean
 });
 const emit = defineEmits(['userDeleted' ,'editUser']);
 
