@@ -85,6 +85,8 @@
                 import { formatDate} from "../../helper.js";
             UI   <td>{{ formatDate(user.created_at)}}</td>
 
+    - TESTED ALL METHOD PASSED.
+
                 
         
 

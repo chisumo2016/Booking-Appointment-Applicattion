@@ -42,7 +42,7 @@
                             <td>{{ user.name }}</td>
                             <td>{{ user.email}}</td>
                             <td>{{ formatDate(user.created_at)}}</td>
-                            <td>-</td>
+                            <td>{{ user.role}}</td>
                             <td>
                                 <a @click.prevent="editUser(user)" href="#"><i class="fa fa-edit"></i></a>
                                 <a @click.prevent="confirmUserDeletion(user)" href="#"><i class="fa fa-trash text-danger ml-2"></i></a>
