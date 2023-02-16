@@ -29,11 +29,11 @@ class UserController extends Controller
 
         //return $user;
     }
-    public  function  update(Request $request, User $user)
+    public  function  update(User $user)
     {
         request()->validate([
-            'name'      => request('name'),
-            'email'     => 'required|unique:users,email' . $user->id,
+            'name'      => 'required',
+            'email'     => 'required|unique:users,email,' . $user->id,
             'password'  => 'sometimes|min:8',
         ]);
         $user->update([

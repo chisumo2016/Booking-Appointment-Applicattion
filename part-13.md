@@ -9,6 +9,13 @@
         <td>{{ user.role}}</td>
     - Instead of displaying the number of Role we should display tthe name of the user.
         * We can use the accessor in the User Model
+            public  function  role(): Attribute
+            {
+                return  Attribute::make(
+                    get:fn($value) => RoleType::from($value)->name,
+                    //get:fn($value) => $value,
+                );
+            }
         
         
     

@@ -37,18 +37,14 @@
                         </tr>
                         </thead>
                         <tbody>
-                        <tr v-for="(user, index) in users" :key="user.id">
-                            <td>{{ index + 1 }}</td>
-                            <td>{{ user.name }}</td>
-                            <td>{{ user.email}}</td>
-                            <td>{{ formatDate(user.created_at)}}</td>
-                            <td>{{ user.role}}</td>
-                            <td>
-                                <a @click.prevent="editUser(user)" href="#"><i class="fa fa-edit"></i></a>
-                                <a @click.prevent="confirmUserDeletion(user)" href="#"><i class="fa fa-trash text-danger ml-2"></i></a>
-                            </td>
-                        </tr>
-
+                        <UserListItem
+                            v-for="(user, index) in users"
+                            :key="user.id"
+                            :user=user
+                            :index=index
+                            @edit-user="editUser"
+                            @user-deleted="userDeleted"
+                        />
                         </tbody>
                     </table>
                 </div>
@@ -122,29 +118,7 @@
         </div>
     </div>
 
-    <!-- Modal Delete -->
-    <div class="modal fade" id="deleteUserModal" data-backdrop="static" tabindex="-1" role="dialog"
-         aria-labelledby="staticBackdropLabel" aria-hidden="true">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="staticBackdropLabel">
-                        <span > Delete User Record </span>
-                    </h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <div class="modal-body">
-                    <h5>Are you sure you want to delete this user ? </h5>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
-                    <button  @click.prevent="deleteUser" type="button"  class="btn btn-danger">Delete Record</button>
-                </div>
-            </div>
-        </div>
-    </div>
+
 </template>
 
 <script setup>
@@ -153,9 +127,9 @@ import {onMounted, reactive, ref} from "vue";
 import { Form, Field } from 'vee-validate';
 import * as yup from "yup";
 import { useToastr } from '../../toastr.js'
-import { formatDate} from "../../helper.js";
+import UserListItem from "./UserListItem.vue";
 // import moment from 'moment';
-
+//import { formatDate} from "../../helper.js";
 
 
 const users         = ref([]);
@@ -163,7 +137,7 @@ const editing       = ref(false);
 const formValues    = ref();
 const form          = ref(null)
 const toastr        = useToastr();
-const userIdBeingDeleted  = ref(null)
+
 
 // const form  = reactive({
 //     name: '',
@@ -243,7 +217,7 @@ const editUser = (user) => {
 };
 
 const  updateUser = (values, {setErrors}) =>{
-    console.log(values);
+    //console.log(values);
     axios.put('/api/users/' + formValues.value.id , values)
     .then((response) =>{
         const index = users.value.findIndex(user => user.id === response.data.id);
@@ -268,23 +242,10 @@ const handleSubmit = (values, actions) =>{
     }
 }
 
-/**Show Modal*/
-const  confirmUserDeletion = (user) => {
-    console.log(user);
-    userIdBeingDeleted.value = user.id;
-    $('#deleteUserModal').modal('show');
+const userDeleted = (userId)=>{
+    users.value = users.value.filter(user => user.id !== userId);
 }
 
-const deleteUser = () =>{
-    axios.delete(`/api/users/${userIdBeingDeleted.value}`)
-    .then(() =>{
-
-        $('#deleteUserModal').modal('hide');
-
-        users.value = users.value.filter(user => user.id !== userIdBeingDeleted.value);
-        toastr.success('User deleted successfully')
-    })
-}
 
 // const createUser =(() => {
 //     axios.post('/api/users', form)
